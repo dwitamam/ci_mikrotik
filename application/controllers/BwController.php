@@ -15,7 +15,7 @@ class BwController extends CI_Controller {
     public function index(){
         if($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
 
-            $this->routerosapi->write(':put /ip/firewall/mangle/getall');
+            $this->routerosapi->write('/system/script/run/number=1');
 
             $users = $this->routerosapi->read();
 
@@ -27,26 +27,19 @@ class BwController extends CI_Controller {
                 $table = '<table class="table table-bordered table-hover">';
                 $table .= '<thead>';
                 $table .= '<tr>';
-				$table .= '<th class="text-center">No.</th>';
-                $table .= '<th class="text-center">Chain</th>';
-                $table .= '<th class="text-center">Action</th>'; 
-                $table .= '<th class="text-center">Src Address</th>';
-                $table .= '<th class="text-center">Address List</th>';
-				$table .= '<th class="text-center">Content</th>';
-				$table .= '<th class="text-center">Disabled</th>';
-				$table .= '<th class="text-center">#</th>';
+                $table .= '<th class="text-center">No.</th>';
+                $table .= '<th class="text-center">No.</th>';
+                $table .= '<th class="text-center">No.</th>';
                 $table .= '</tr>';
                 $table .= '</thead>';
                 $i = 1;
                 foreach ($users as $user){	
 					$table .= '<tr>';
-					$table .= '<td class="col-md-1 text-center">'.$i.'.</td>';
-					$table .= '<td class="col-md-1 text-center">'.$user['chain'].'</td>';
-					$table .= '<td class="col-md-2 text-center">'.$user['action'].'</td>';
-                    $table .= '<td class="col-md-1 text-center">'.$user['src-address'].'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$user['address-list'].'</td>';
-					$table .= '<td class="col-md-1 text-center">'.$user['content'].'</td>';
-					$table .= '<td class="col-md-1 text-center">'.$user['disabled'].'</td>';
+
+                    $table .= '<td class="col-md-3 text-center">'.$user['address'].'</td>';
+                    $table .= '<td class="col-md-3 text-center">'.$user['network'].'</td>';
+                    $table .= '<td class="col-md-3 text-center">'.$user['interface'].'</td>';
+
 						
 					$table .= '<td>';
 					$table .= anchor('blokSitus/update/'.$user['.id'],'<button type="button" class="btn btn-success btn-sm">
