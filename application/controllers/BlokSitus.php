@@ -8,9 +8,9 @@ class BlokSitus extends CI_Controller {
         $this->load->library('routerosapi');
     }
 
-    var $hostname = '192.168.40.1';
-    var $username = 'admin';
-    var $password = '';
+    var $hostname = '192.168.1.5';
+    var $username = 'zuhrul';
+    var $password = 'zuhrul9';
 
     public function index(){
         if($this->routerosapi->connect($this->hostname, $this->username, $this->password)){

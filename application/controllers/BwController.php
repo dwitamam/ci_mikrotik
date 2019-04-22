@@ -15,8 +15,9 @@ class BwController extends CI_Controller {
     public function index(){
         if($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
 
-            $this->routerosapi->write('/system/script/run/number=1');
-
+            //$this->routerosapi->write(':put [/ip/hotspot/user/get/faiz/bytes-in]');
+            //$this->routerosapi->write('/ip/address/getall');
+            $this->routerosapi->write('/ip/hotspot/host/print/packets/getall');
             $users = $this->routerosapi->read();
 
             $this->routerosapi->disconnect();
@@ -36,8 +37,8 @@ class BwController extends CI_Controller {
                 foreach ($users as $user){	
 					$table .= '<tr>';
 
-                    $table .= '<td class="col-md-3 text-center">'.$user['address'].'</td>';
-                    $table .= '<td class="col-md-3 text-center">'.$user['network'].'</td>';
+                    $table .= '<td class="col-md-3 text-center">'.$user['uptime'].'</td>';
+                    $table .= '<td class="col-md-3 text-center">'.$user['bytes-in'].'</td>';
                     $table .= '<td class="col-md-3 text-center">'.$user['interface'].'</td>';
 
 						
