@@ -10,7 +10,7 @@ class BwController extends CI_Controller {
 
     var $hostname = '192.168.40.1';
     var $username = 'admin';
-    var $password = '';
+    var $password = 'hamdani';
 
     public function index(){
         if($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
