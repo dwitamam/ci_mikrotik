@@ -8,9 +8,9 @@ class FilterRules extends CI_Controller {
         $this->load->library('routerosapi');
     }
 
-    var $hostname = '192.168.1.5';
-    var $username = 'zuhrul';
-    var $password = 'zuhrul9';
+    var $hostname = '192.168.2.1';
+    var $username = 'admin';
+    var $password = '';
 
     public function index(){
         if($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
