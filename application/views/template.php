@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="<?php echo base_url().'assets/css/navbar-fixed-top.css';?>">
     <script src="<?php echo base_url().'assets.js/jquery.min.js';?>"></script>
     <script src="<?php echo base_url().'assets.js/bootstrap.min.js';?>"></script>
+    <meta http-equiv="refresh" content="1" />
     <title>Blok Situs Mikrotik</title>
 </head>
 <body>

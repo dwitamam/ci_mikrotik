@@ -15,13 +15,28 @@ class BwController extends CI_Controller {
     
 
     public function index(){
+
+        $a=0;
+        $b=0;
+
         $this->load->library('session');
 
         if($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
+
+            //$this->routerosapi->write(':put [/ip/hotspot/user/get/faiz/bytes-in]');
+            //$this->routerosapi->write('/ip/address/getall');
+            //$this->routerosapi->write('/ip/hotspot/host/print/packets/getall');
             $this->routerosapi->write('/queue/simple/getall');
+
             $users = $this->routerosapi->read();
+
             $this->routerosapi->disconnect();
+
             $total_results = count($users);
+
+            $maxTx;
+            $maxRx;
+
             if($total_results > 0){
                 $data['total_results'] = $total_results;
                 $table = '<table class="table table-bordered table-hover">';
@@ -31,61 +46,75 @@ class BwController extends CI_Controller {
                 $table .= '<th class="text-center">transfer rate</th>';
                 $table .= '<th class="text-center">receive rate</th>';
                 $table .= '<th class="text-center">ip target</th>';
-                $table .= '<th class="text-center">tx max</th>';
-                $table .= '<th class="text-center">rx max</th>';
+                $table .= '<th class="text-center">terbesar tx</th>';
+                $table .= '<th class="text-center">terbesar rx</th>';
 
                 $table .= '</tr>';
                 $table .= '</thead>';
                 $i = 1;
 
-
-
                 foreach ($users as $user){
-                    // untuk penamaan session
-                    $arrayIp = $user['target'];
-                    $arrayIpTextTx = $arrayIp.'tx';
-                    $arrayIpTextRx = $arrayIp.'rx';
-
-                    // if untuk buat session
-                    if(!isset($_SESSION[$arrayIpTextTx]) || !isset($_SESSION[$arrayIpTextRx])){
-                        $_SESSION[$arrayIpTextTx] = 0; 
-                        $_SESSION[$arrayIpTextRx] = 0;
+                    $terbesarTx = 0;
+                    $terbesarRx = 0;
+                    $namaIp = $user['target'];
+                    $var1 = "";
+                    $var2 = "";
+                    if(!empty($_SESSION[$namaIp])){
+                        $var1 = $namaIp.'tx';
+                        $var2 = $namaIp.'rx';
+                    }else{
+                        $_SESSION[$namaIp.'tx'] = 0;
+                        $_SESSION[$namaIp.'rx'] = 0;
                     }
-                    
-                    // untuk pengambilan tx rx dari rate 
+
+                    if(!empty($_SESSION[$var1]) or !empty($_SESSION[$var2])){
+                        $terbesarTx = $_SESSION[$var1];
+                        $terbesarRx = $_SESSION[$var2];
+                    }else{
+                        $_SESSION[$var1] = 0;
+                        $_SESSION[$var2] = 0;
+                    }
+            
                     $rate = $user['rate'];
                     $split = explode("/", $rate);
                     $tx = $split[0];
                     $rx = $split[1];
                     $txInt = (int)$tx;
                     $rxInt = (int)$rx;
-                    $txV = $txInt / 1000;
-                    $rxV = $rxInt / 1000;
-                    $txMax = 0;
-                    $rxMax = 0;               
 
-                    // if untuk perbandingan tx rx
-                    if($txMax < $txV){
-                        $txMax = $txV;
-                        if($_SESSION[$arrayIpTextTx] < $txMax){
-                            $_SESSION[$arrayIpTextTx] = $txMax;
-                        }
+                    $usera = $rxInt / 1000;
+                    $userb = $txInt / 1000;
+                    
+
+                    if($terbesarTx<$usera){
+                        $terbesarTx = $usera;
+                        $_SESSION[$var1] = $usera;
                     }
-                    if($rxMax < $rxV){
-                        $rxMax = $rxV;
-                        if($_SESSION[$arrayIpTextRx] < $rxMax){
-                            $_SESSION[$arrayIpTextRx] = $rxMax;
-                        }
+
+
+                    if($terbesarRx<$userb){
+                        $terbesarRx = $userb;
+                        $_SESSION[$var2] = $userb;
                     }
+
+                    if($a<$_SESSION[$var1]){
+                        $a = $_SESSION[$var1];
+                    }
+
+
+                    if($b<$userb){
+                        $b= $_SESSION[$var2];
+                    }
+
 
 					$table .= '<tr>';
 
                     $table .= '<td class="col-md-1 text-center">'.$i.'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$rxV.' kb'.'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$txV.' kb'.'</td>';
+                    $table .= '<td class="col-md-2 text-center">'.$usera.' kb'.'</td>';
+                    $table .= '<td class="col-md-2 text-center">'.$userb.' kb'.'</td>';
                     $table .= '<td class="col-md-2 text-center">'.$user['target'].'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$_SESSION[$arrayIpTextRx].'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$_SESSION[$arrayIpTextTx].'</td>';
+                    $table .= '<td class="col-md-2 text-center">'.$a.'</td>';
+                    $table .= '<td class="col-md-2 text-center">'.$b.'</td>';
 					
 
 					$table .= '</td>';				
@@ -172,69 +201,12 @@ class BwController extends CI_Controller {
         }
     }
     
-    public function cek(){
-        $this->load->library('session');
-
-        if($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
-            $this->routerosapi->write('/queue/simple/getall');
-            $values = $this->routerosapi->read();
-            $this->routerosapi->disconnect();
-
-            foreach($values as $value){
-                // untuk penamaan session
-                $arrayIp = $value['target'];
-                $arrayIpTextTx = $arrayIp.'tx';
-                $arrayIpTextRx = $arrayIp.'rx';
-
-                // if untuk buat session
-                if(!isset($_SESSION[$arrayIpTextTx]) || !isset($_SESSION[$arrayIpTextRx])){
-                    $_SESSION[$arrayIpTextTx] = 0; 
-                    $_SESSION[$arrayIpTextRx] = 0;
-                }
-                
-                // untuk pengambilan tx rx dari rate 
-                $rate = $value['rate'];
-                $split = explode("/", $rate);
-                $tx = $split[0];
-                $rx = $split[1];
-                $txInt = (int)$tx;
-                $rxInt = (int)$rx;
-                $txV = $txInt / 1000;
-                $rxV = $rxInt / 1000;
-                $txMax = 0;
-                $rxMax = 0;
-
-                echo 'hehe'.'<br>';                
-
-                // if untuk perbandingan tx rx
-                if($txMax < $txV){
-                    $txMax = $txV;
-                    if($_SESSION[$arrayIpTextTx] < $txMax){
-                        $_SESSION[$arrayIpTextTx] = $txMax;
-                    }
-                }
-                if($rxMax < $rxV){
-                    $rxMax = $rxV;
-                    if($_SESSION[$arrayIpTextRx] < $rxMax){
-                        $_SESSION[$arrayIpTextRx] = $rxMax;
-                    }
-                }
-
-                echo 'tx per detik '.$txV.'<br>';
-                echo 'tx max '.$_SESSION[$arrayIpTextTx].'<br>';
-                echo 'rx per detik '.$rxV.'<br>';
-                echo 'rx max '.$_SESSION[$arrayIpTextRx].'<br>';
-
-                //echo $_SESSION[$arrayIpTextTx].'<br>';
-                //echo $_SESSION[$arrayIpTextRx].'<br>';
-                echo '<hr>';
-            }
-        }
-
-
-        
-
-
+    public function updateFile(){
+        $angkaNotepad;
+        $this->load->helper('file');
+        $baca = file('data/data.txt');
+        print_r($baca);
+        echo $baca;
     }
 
     public function sesi(){

@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>Bandwidth</h1>
+    <h1>Bandwidth</h1><?php echo $nyom; ?>
     <hr>
     <?php
         $flashmessage = $this->session->flashdata('message');

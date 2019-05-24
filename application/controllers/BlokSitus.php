@@ -8,7 +8,7 @@ class BlokSitus extends CI_Controller {
         $this->load->library('routerosapi');
     }
 
-    var $hostname = '192.168.2.1';
+    var $hostname = '192.168.40.1';
     var $username = 'admin';
     var $password = '';
 
@@ -71,7 +71,10 @@ class BlokSitus extends CI_Controller {
 			$data['link'] = array('link_tambah' => anchor('blokSitus/add', '<button type="button" class="btn btn-primary btn-sm">
 			<span class="glyphicon glyphicon-plus"></span> Tambah</button>'));
 			$this->load->view('template', $data);
-        }
+		}
+		
+		
+
     }
 
     public function disable($id){
@@ -105,10 +108,6 @@ class BlokSitus extends CI_Controller {
 			$this->session->set_flashdata('message','Data mangle berhasil dihapus!');
 			redirect('blokSitus');
 		}
-	}
-
-	public function coba(){
-
 	}
 
 	public function addSatu(){
