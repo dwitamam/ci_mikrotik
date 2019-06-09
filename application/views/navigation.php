@@ -11,6 +11,7 @@
             <a href="<?php echo base_url().'index.php/blokSitus' ?>" class="navbar-brand">Mangle</a>
             <a href="<?php echo base_url().'index.php/filterRules'?>" class="navbar-brand">Filter Rules</a>
             <a href="<?php echo base_url().'index.php/BwController' ?>" class="navbar-brand" >Bandwidth</a>
+            <a href="<?php echo base_url().'index.php/HistoryLog' ?>" class="navbar-brand">History</a>
         </div>
     </div>
 </nav>
