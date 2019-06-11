@@ -73,15 +73,5 @@ class HistoryLog extends CI_Controller {
         $this->load->view('template', $data);
     }
 
-    public function tampil1(){
-        echo '<table border="1">';
-        $file = fopen("/var/log/xlog.log", "r") or die ("tidak dapat membaca log");
-        while(!feof($file)){
-            $data = fgets($file);
-            echo "<tr><td>".str_replace('|', '</td><td>', $data).'</td></tr>';
-        }
-        echo '</table>';
-    }
-
 
 }
