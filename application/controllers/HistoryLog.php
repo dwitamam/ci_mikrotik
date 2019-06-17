@@ -70,7 +70,7 @@ class HistoryLog extends CI_Controller {
         }
         $data['table'] = $table;
         $data['container'] = 'log/log';
-        $this->load->view('template', $data);
+        $this->load->view('template1', $data);
     }
 
 

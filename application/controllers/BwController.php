@@ -97,7 +97,7 @@ class BwController extends CI_Controller {
             }
             $data['container'] = 'bandwidth/bandwidth';	
 
-			$this->load->view('template', $data);
+			$this->load->view('template1', $data);
         }
     }
 
