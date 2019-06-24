@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>Filter Rules</h1>
+    <h1>Hotspot Users</h1>
     <a href="<?php echo base_url().'index.php/hotspotController/userAktif' ?>"><button class="btn btn-primary" type="button">User Aktif</button></a>
     <hr>
     <?php

@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>Bandwidth</h1><?php echo $nyom; ?>
+    <h1>Bandwidth</h1><?php echo "TX: <kbd>".$nyom2."</kbd> "." | RX: <kbd>".$nyom1."</kbd><br>"."RATA - RATA TX MAX: <kbd>".$nyom4."</kbd> | RATA - RATA RX MAX: <kbd>".$nyom3."</kbd><br>TX MAX TOTAL: <kbd>".$nyom6."</kbd> | TX MAX TOTAL: <kbd>".$nyom5."</kbd>"; ?>
     <hr>
     <?php
         $flashmessage = $this->session->flashdata('message');

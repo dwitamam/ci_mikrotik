@@ -30,7 +30,7 @@ class HotspotController extends CI_Controller {
 				$table .= '<th class="text-center">No.</th>';
                 $table .= '<th class="text-center">Server</th>';
                 $table .= '<th class="text-center">Name</th>'; 
-                $table .= '<th class="text-center">Address</th>';
+
                 $table .= '<th class="text-center">Profile</th>';
 				$table .= '<th class="text-center">Uptime</th>';
                 $table .= '</tr>';
@@ -41,10 +41,10 @@ class HotspotController extends CI_Controller {
 					$table .= '<td class="col-md-1 text-center">'.$i.'.</td>';
 					$table .= '<td class="col-md-1 text-center">'.$user['server'].'</td>';
 					$table .= '<td class="col-md-2 text-center">'.$user['name'].'</td>';
-                    $table .= '<td class="col-md-1 text-center">'.$user['address'].'</td>';
+
                     $table .= '<td class="col-md-2 text-center">'.$user['profile'].'</td>';
 					$table .= '<td class="col-md-1 text-center">'.$user['uptime'].'</td>';			
-					$table .= '<td>';
+					$table .= '<td class="text-center">';
 					
 					$table .= anchor('hotspotController/remove/'.$user['.id'],'<button type="button" class="btn btn-danger btn-sm">
 					<span class="glyphicon glyphicon-minus"></span> Remove</button>').' ';
@@ -63,7 +63,7 @@ class HotspotController extends CI_Controller {
 				$data['table'] = $table;
             }
             $data['container'] = 'hotspot/hotspot';	
-			$data['link'] = array('link_tambah' => anchor('hotspot/add', '<button type="button" class="btn btn-primary btn-sm">
+			$data['link'] = array('link_tambah' => anchor('hotspotController/add', '<button type="button" class="btn btn-primary btn-sm">
 			<span class="glyphicon glyphicon-plus"></span> Tambah</button>'));
 			$this->load->view('template', $data);
 		}
@@ -108,7 +108,7 @@ class HotspotController extends CI_Controller {
 				$data['table'] = $table;
             }
             $data['container'] = 'hotspot/hotspot';	
-			$data['link'] = array('link_tambah' => anchor('hotspot/add', '<button type="button" class="btn btn-primary btn-sm">
+			$data['link'] = array('link_tambah' => anchor('hotspotController/add', '<button type="button" class="btn btn-primary btn-sm">
 			<span class="glyphicon glyphicon-plus"></span> Tambah</button>'));
 			$this->load->view('template1', $data);
 		}
@@ -147,73 +147,44 @@ class HotspotController extends CI_Controller {
 		}
 	}
 
-	public function addSatu(){
-		$data['container'] = 'mangle/mangleForm.php';
-		$data['form_action'] = site_url('blokSitus/addSatu');
-
-		$action = 'add-dst-to-address-list';
-		$chain = 'forward';
-		$srcAddress = $this->input->post('srcAddress');
-		$content = $this->input->post('content');
-		$addressList = $this->input->post('addressList');
-
-		if ($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
-			$this->routerosapi->write('/ip/firewall/mangle/add', false);
-		
-			$this->routerosapi->write('=action='.$action, false);
-			$this->routerosapi->write('=chain='.$chain, false);
-			$this->routerosapi->write('=src-address='.$srcAddress, false);
-			$this->routerosapi->write('=content='.$content, false);
-			$this->routerosapi->write('=address-list='.$addressList, false);
-
-			$hotspot_users = $this->routerosapi->read();
-			$this->routerosapi->disconnect();
-			$this->session->set_flashdata('message','Data berhasil ditambahkan!');
-			redirect('blokSitus');
-
-			
-		}
-		$this->load->view('template', $data);
-		
-	}
-
 	public function add(){
 		$data['container'] = 'hotspot/hotspotForm.php';
-		$data['form_action'] = site_url('hotspot/add');				
+		$data['form_action'] = site_url('hotspotController/add');				
 				
-		$this->form_validation->set_rules('server', 'server', 'required');
-		$this->form_validation->set_rules('name', 'name', 'required');		
-		$this->form_validation->set_rules('profile', 'profile', 'required');	
+		
+		$this->form_validation->set_rules('server', 'Server', 'required');
+		$this->form_validation->set_rules('profile', 'Profile', 'required');
+		
+		$this->form_validation->set_rules('name', 'Name', 'required');		
+		$this->form_validation->set_rules('password', 'Password', 'required');	
 				
 		if ($this->form_validation->run() == TRUE){		
 
-			$chain = 'forward';	 
-			$srcAddress = $this->input->post('srcAddress');
-			$content = $this->input->post('content');
-			$action = 'add-dst-to-address-list';
-			$addressList = $this->input->post('addressList');
+			$server = $this->input->post('server');	
+			$profile = $this->input->post('profile');
+			$name = $this->input->post('name');
+			$password = $this->input->post('password'); 
+			
 			
 			
 
 			if ($this->routerosapi->connect($this->hostname, $this->username, $this->password)){
 
-				$this->routerosapi->write('/ip/firewall/mangle/add', false);
+				$this->routerosapi->write('/ip/hotspot/user/add', false);
 
-				$this->routerosapi->write('=chain='.$chain, false);
-				$this->routerosapi->write('=src-address='.$srcAddress, false);
-				$this->routerosapi->write('=content='.$content, false);
-				$this->routerosapi->write('=action='.$action, false);
-				$this->routerosapi->write('=address-list='.$addressList);
+				$this->routerosapi->write('=server='.$server, false);
+				$this->routerosapi->write('=profile='.$profile, false);
+				$this->routerosapi->write('=name='.$name, false);
+				$this->routerosapi->write('=password='.$password);
 			
 				$hotspot_users = $this->routerosapi->read();
 				$this->routerosapi->disconnect();	
 				$this->session->set_flashdata('message','Data berhasil ditambahkan!');
-				redirect('blokSitus');
+				redirect('hotspotController');
 			}
 		}else{
-			$data['default']['srcAddress'] = $this->input->post('srcAddress');
-			$data['default']['content'] = $this->input->post('content');
-			$data['default']['addressList'] = $this->input->post('addressList');
+			$data['default']['server'] = $this->input->post('server');
+			$data['default']['profile'] = $this->input->post('profile');
 
 		}
 		$this->load->view('template', $data);				

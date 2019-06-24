@@ -13,18 +13,18 @@ class HistoryLog extends CI_Controller {
     var $password = '';
 
     
-
+    // codingan buat nampilin log dari mikrotik
     public function index(){
-        if($fh = fopen('/var/log/alog.log', 'r')){
+        if($fh = fopen('/var/log/ray.log', 'r')){
             $table = '<div class="container-fluid">';
             $table .= '<table class="table table-bordered table-hover table-responsive">';
             $table .= '<thead><br>';
             $table .= '<tr>';
-            $table .= '<th style="width: 1%">Bulan</th>';
-            $table .= '<th >Tanggal</th>';
+            $table .= '<th>Bulan</th>';
+            $table .= '<th>Tanggal</th>';
             $table .= '<th>Jam</th>';
-            $table .= '<th>Jenis Request</th>';
-            $table .= '<th>Service</th>';
+            $table .= '<th>Interface</th>';
+
             $table .= '<th>IP Client</th>';
             $table .= '<th>Jenis Request</th>';
             $table .= '<th>Keterangan</th>';
@@ -40,14 +40,15 @@ class HistoryLog extends CI_Controller {
                 $table .= $u[0];
                 $table .= '</td>';   
                 $table .= '<td>';
+                $table .= $u[1];
+                $table .= ' </td>';
+                $table .= '<td>';
                 $table .= $u[2];
                 $table .= ' </td>';
                 $table .= '<td>';
                 $table .= $u[3];
                 $table .= ' </td>';
-                $table .= '<td>';
-                $table .= $u[4];
-                $table .= ' </td>';
+
                 $table .= '<td>';
                 $table .= $u[5];
                 $table .= ' </td>';
@@ -56,9 +57,6 @@ class HistoryLog extends CI_Controller {
                 $table .= ' </td>';
                 $table .= '<td>';
                 $table .= $u[7];
-                $table .= ' </td>';
-                $table .= '<td>';
-                $table .= $u[8];
                 $table .= ' </td>';
                 $ar = array(" ");
                 for($i=6; $i<$e;$i++){

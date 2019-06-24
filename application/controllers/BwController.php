@@ -37,61 +37,97 @@ class BwController extends CI_Controller {
                 $table .= '</tr>';
                 $table .= '</thead>';
                 $i = 1;
+                
+                $sempakTtx = array();
+                $sempakRrx = array();
 
+                $sempakRrxMax = array();
+                $sempakTtxMax = array();
+
+                $dataEnd = end($users);
 
 
                 foreach ($users as $user){
-                    // untuk penamaan session
-                    $arrayIp = $user['target'];
-                    $arrayIpTextTx = $arrayIp.'tx';
-                    $arrayIpTextRx = $arrayIp.'rx';
+                    if($dataEnd != $user ){
+                        // untuk penamaan session
+                        $arrayIp = $user['target'];
+                        $arrayIpTextTx = $arrayIp.'tx';
+                        $arrayIpTextRx = $arrayIp.'rx';
 
-                    // if untuk buat session
-                    if(!isset($_SESSION[$arrayIpTextTx]) || !isset($_SESSION[$arrayIpTextRx])){
-                        $_SESSION[$arrayIpTextTx] = 0; 
-                        $_SESSION[$arrayIpTextRx] = 0;
-                    }
-                    
-                    // untuk pengambilan tx rx dari rate 
-                    $rate = $user['rate'];
-                    $split = explode("/", $rate);
-                    $tx = $split[0];
-                    $rx = $split[1];
-                    $txInt = (int)$tx;
-                    $rxInt = (int)$rx;
-                    $txV = $txInt / 1000;
-                    $rxV = $rxInt / 1000;
-                    $txMax = 0;
-                    $rxMax = 0;               
+                        
 
-                    // if untuk perbandingan tx rx
-                    if($txMax < $txV){
-                        $txMax = $txV;
-                        if($_SESSION[$arrayIpTextTx] < $txMax){
-                            $_SESSION[$arrayIpTextTx] = $txMax;
+                        // if untuk buat session
+                        if(!isset($_SESSION[$arrayIpTextTx]) || !isset($_SESSION[$arrayIpTextRx])){
+                            $_SESSION[$arrayIpTextTx] = 0; 
+                            $_SESSION[$arrayIpTextRx] = 0;
                         }
-                    }
-                    if($rxMax < $rxV){
-                        $rxMax = $rxV;
-                        if($_SESSION[$arrayIpTextRx] < $rxMax){
-                            $_SESSION[$arrayIpTextRx] = $rxMax;
+                        
+                        // untuk pengambilan tx rx dari rate 
+                        $rate = $user['rate'];
+                        $split = explode("/", $rate);
+                        $tx = $split[0];
+                        $rx = $split[1];
+
+                        // ambil paling gede
+                        $txInt = (int)$tx;
+                        $rxInt = (int)$rx;
+                        $txV = $txInt / 1000;
+                        $rxV = $rxInt / 1000;
+                        $txMax = 0;
+                        $rxMax = 0;               
+
+                        // if untuk perbandingan tx rx
+                        if($txMax < $txV){
+                            $txMax = $txV;
+                            if($_SESSION[$arrayIpTextTx] < $txMax){
+                                $_SESSION[$arrayIpTextTx] = $txMax;
+                                
+                            }
                         }
-                    }
+                        if($rxMax < $rxV){
+                            $rxMax = $rxV;
+                            if($_SESSION[$arrayIpTextRx] < $rxMax){
+                                $_SESSION[$arrayIpTextRx] = $rxMax;
+                                
+                            }
+                        }
 
-					$table .= '<tr>';
+                        $table .= '<tr>';
 
-                    $table .= '<td class="col-md-1 text-center">'.$i.'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$rxV.' kb'.'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$txV.' kb'.'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$user['target'].'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$_SESSION[$arrayIpTextRx].'</td>';
-                    $table .= '<td class="col-md-2 text-center">'.$_SESSION[$arrayIpTextTx].'</td>';
-					
+                        $table .= '<td class="col-md-1 text-center">'.$i.'</td>';
+                        $table .= '<td class="col-md-2 text-center">'.$rxV.' kb'.'</td>';
+                        $table .= '<td class="col-md-2 text-center">'.$txV.' kb'.'</td>';
+                        $table .= '<td class="col-md-2 text-center">'.$user['target'].'</td>';
+                        $table .= '<td class="col-md-2 text-center">'.$_SESSION[$arrayIpTextRx].'</td>';
+                        $table .= '<td class="col-md-2 text-center">'.$_SESSION[$arrayIpTextTx].'</td>';
+                        
 
-					$table .= '</td>';				
-					$table .= '</tr>';
-					$i++;
-				}
+                        $table .= '</td>';				
+                        $table .= '</tr>';
+                        $i++;
+                        
+                        $sempakTx = array_push($sempakTtx, $txV);
+                        $sempakRx = array_push($sempakRrx, $rxV);
+                        array_push($sempakTtxMax, $_SESSION[$arrayIpTextTx]);
+                        array_push($sempakRrxMax, $_SESSION[$arrayIpTextRx]);
+                }
+
+                }
+                $avgTx = array_sum($sempakTtx) / count($sempakTtx);
+                $avgRx = array_sum($sempakRrx) / count($sempakRrx);
+                $avgTxMax = array_sum($sempakTtxMax) / count($sempakTtxMax);
+                $avgRxMax = array_sum($sempakRrxMax) / count($sempakRrxMax);
+
+                $data['nyom1'] = round($avgTx);
+                $data['nyom2'] = round($avgRx);
+
+                $data['nyom3'] = ($avgTxMax);
+                $data['nyom4'] = ($avgRxMax);
+
+                $data['nyom5'] = array_sum($sempakTtxMax);
+                $data['nyom6'] = array_sum($sempakRrxMax);
+
+                
 				$table .= '</table>';
 				$data['table'] = $table;
             }
